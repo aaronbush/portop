@@ -12,6 +12,7 @@ portInfo = {}
 host = "coswm01"
 first_run = TRUE
 
+while true do
 Manager.open(:Host => host) do |manager|
 	response = manager.get_bulk(0, MAX_ROWS, ["ifDescr", "ifAdminStatus", "ifOperStatus", "ifSpeed", "ifLastChange", "ifInOctets", "ifOutOctets"])
 	
@@ -21,10 +22,17 @@ Manager.open(:Host => host) do |manager|
 	portInfo[host]["prev_vb_list"] = list if first_run
 	portInfo[host]["vb_list"] = list
 
-	puts portInfo[host]["vb_list"].length
+	#puts portInfo[host]["vb_list"].length
 	#puts portInfo[host]["vb_list"][1]
 	#puts portInfo[host]["vb_list"][1].name
 	#puts portInfo[host]["vb_list"][1].value
+
+	# ----------------------
+	# show the current stats
+	# ----------------------
+
+	puts "Description    InRate    OutRate    AdminState/OperState    Speed        Last Change"
+	puts "===================================================================================="
 
 	until list.empty?
 		ifDescr = list.shift
@@ -32,16 +40,26 @@ Manager.open(:Host => host) do |manager|
 		ifOperStatus = list.shift
 		ifSpeed = list.shift
 		ifLastChange = list.shift
-		ifInOctets = list.shift
-		ifOutOctets = list.shift
+		if first_run
+			ifInOctets = "?"
+			ifOutOctets = "?"
+			ifInRate = "N/A"
+			ifOutRate = "N/A"
+			list.shift
+			list.shift
+		else
+			ifInOctets = list.shift
+			ifOutOctets = list.shift
+			ifInRate = ifInOctets.value.to_i - previfInOctets
+			ifOutRate = ifOutOctets.value.to_i - previfOutOctets
+		end
 		#puts "#{ifDescr.value}    #{ifAdminStatus.value}/#{ifOperStatus.value}	#{ifSpeed.value}	#{ifLastChange.value} AGO"
 
-		ifInRate = ifInOctets.value.to_i - previfInOctets
 
-		puts "#{ifDescr.value}: In[#{ifInOctets.value} - #{previfInOctets}]:#{ifInRate}"
-		previfInOctets = ifInOctets.value
-		previfOutOctets = ifOutOctets.value
+		puts "#{ifDescr.value}   #{ifInRate}    #{ifOutRate}    #{ifAdminStatus.value}/#{ifOperStatus.value} #{ifSpeed.value}  #{ifLastChange.value}"
 
 		first_run = FALSE
 	end
 end
+
+end # keep it going
