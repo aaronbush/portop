@@ -1,6 +1,7 @@
 #!/usr/bin/env ruby
 
-ports = []
+ports = Array.new
+#PortInfo = Struct.new(:hostname, :ifDescr, :ifInOctets, :ifOutOctets)
 
 ports << {
 	:hostname => 'coswm01',
@@ -23,3 +24,5 @@ ports << {
 
 #ports.each {|p| print p.class}
 p ports.sort_by {|p| p[:inBits] }
+
+p ports.find {|p| p[:portID] == "fe0/1" }
