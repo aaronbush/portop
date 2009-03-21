@@ -10,6 +10,16 @@ MAX_ROWS = 4
 HDR = "Description    InRate    OutRate    AdminState/OperState    Speed        Last Change"
 SEP = "===================================================================================="
 
+template_hdr == ERB.new <<-EOF
+	<%= HDR %>
+	<%= SEP %>
+EOF
+
+template_body = ERB.new <<-EOF
+% port.each do |p|
+p.ifDescr
+% end
+EOF
 
 ports = Array.new
 PortInfo = Struct.new(:hostname, :ifDescr, :ifAdminStatus, :ifOperStatus, :ifSpeed, :ifLastChange, :ifInOctets, :ifInOctetsDelta, :ifOutOctets, :ifOutOctetsDelta)
