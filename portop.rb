@@ -23,7 +23,6 @@ class Numeric
 
 end
 
-
 MAX_ROWS = 4
 HDR = "Description          InRate    OutRate   Admin/Oper    Speed        Last Change"
 SEP = "==============================================================================="
@@ -41,13 +40,7 @@ EOF
 ports = Array.new
 PortInfo = Struct.new(:hostname, :ifDescr, :ifAdminStatus, :ifOperStatus, :ifSpeed, :ifLastChange, :ifInOctets, :ifInOctetsDelta, :ifOutOctets, :ifOutOctetsDelta)
 
-class PortInfo
-	def fp(x)
-		logA(x, 1024)
-	end
-end
-
-host = "coswm01"
+host = ARGV[0]
 delay = 1
 
 # ----------------------
